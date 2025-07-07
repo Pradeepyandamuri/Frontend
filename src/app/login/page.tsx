@@ -13,53 +13,64 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:5000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    const data = await res.json();
+      if (!res.ok) throw new Error("Login failed");
 
-    if (data.token) {
-      localStorage.setItem("token", data.token); 
-      localStorage.setItem("user", JSON.stringify(data.user));
       router.push("/");
-    } else {
-      alert(data.message || "Login failed");
+    } catch (error) {
+      alert("Login error");
     }
   };
-  const handleRedirect=()=>{
-    router.push('/signup')
-  }
+
+  const handleRedirect = () => {
+    router.push("/signup");
+  };
 
   return (
-    <div className="max-w-md mx-auto mt-20 bg-white p-6 rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Login</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-          className="w-full px-4 py-2 border rounded focus:ring focus:ring-blue-300"
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          className="w-full px-4 py-2 border rounded focus:ring focus:ring-blue-300"
-        />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded w-full">
-          Log In
-        </button>
-        If you don't have account please <button type="button" onClick={handleRedirect}
-        className="bg-blue-600 text-white px-2 rounded"
-        >SignUp</button>
-      </form>
-    </div>
+    <main className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6 text-center text-blue-800">Login</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded focus:ring focus:ring-blue-300"
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded focus:ring focus:ring-blue-300"
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700"
+          >
+            Log In
+          </button>
+          <p className="text-sm text-center text-gray-600">
+            If you don&apos;t have an account, please {" "}
+            <button
+              type="button"
+              onClick={handleRedirect}
+              className="text-blue-600 hover:underline"
+            >
+              Sign Up
+            </button>
+          </p>
+        </form>
+      </div>
+    </main>
   );
 }

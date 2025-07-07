@@ -1,20 +1,24 @@
 import axios from "axios";
+import { Task } from "../../../types/Task";
 
-const API = axios.create({
-  baseURL: "http://localhost:5000",
-});
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"; // update if needed
 
-// Automatically attach token to each request if available
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+export async function fetchTasks(): Promise<{ data: Task[] }> {
+  const response = await axios.get(`${BASE_URL}/tasks`);
+  return response;
+}
 
-// Tasks API functions
-export const fetchTasks = () => API.get("/tasks");
-export const createTask = (task: any) => API.post("/tasks", task);
-export const deleteTask = (id: number) => API.delete(`/tasks/${id}`);
-export const updateTask = (id: number, task: any) => API.put(`/tasks/${id}`, task);
+export async function createTask(taskData: Partial<Task>): Promise<{ data: Task }> {
+  const response = await axios.post(`${BASE_URL}/tasks`, taskData);
+  return response;
+}
+
+export async function updateTask(id: number, taskData: Partial<Task>): Promise<{ data: Task }> {
+  const response = await axios.put(`${BASE_URL}/tasks/${id}`, taskData);
+  return response;
+}
+
+export async function deleteTask(id: number): Promise<{ data: { message: string } }> {
+  const response = await axios.delete(`${BASE_URL}/tasks/${id}`);
+  return response;
+}
