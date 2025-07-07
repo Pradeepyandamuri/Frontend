@@ -19,20 +19,22 @@ export default function SignupPage() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signup`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
       if (!res.ok) {
-        throw new Error("Signup failed");
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Signup failed");
       }
 
+      // Optional: you can store token or redirect after success
       router.push("/login");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Signup error:", err);
-      alert("Something went wrong. Please try again.");
+      alert(err.message || "Something went wrong. Please try again.");
     }
   };
 
