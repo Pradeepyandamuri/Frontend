@@ -1,26 +1,80 @@
-// utils/api.ts
-import axios from "axios";
 import { Task } from "../../../types/Task";
 
-// ✅ Corrected environment variable name
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
+// ✅ Helper to get the stored token
+const getAuthHeader = () => {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+// ✅ Fetch all tasks
 export async function fetchTasks(): Promise<{ data: Task[] }> {
-  const response = await axios.get(`${BASE_URL}/tasks`);
-  return response;
+  const response = await fetch(`${BASE_URL}/tasks`, {
+    headers: {
+      ...getAuthHeader(),
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch tasks: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return { data };
 }
 
+// ✅ Create a new task
 export async function createTask(taskData: Partial<Task>): Promise<{ data: Task }> {
-  const response = await axios.post(`${BASE_URL}/tasks`, taskData);
-  return response;
+  const response = await fetch(`${BASE_URL}/tasks`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeader(),
+    },
+    body: JSON.stringify(taskData),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to create task: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return { data };
 }
 
+// ✅ Update a task
 export async function updateTask(id: number, taskData: Partial<Task>): Promise<{ data: Task }> {
-  const response = await axios.put(`${BASE_URL}/tasks/${id}`, taskData);
-  return response;
+  const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeader(),
+    },
+    body: JSON.stringify(taskData),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to update task: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return { data };
 }
 
+// ✅ Delete a task
 export async function deleteTask(id: number): Promise<{ data: { message: string } }> {
-  const response = await axios.delete(`${BASE_URL}/tasks/${id}`);
-  return response;
+  const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+    method: "DELETE",
+    headers: {
+      ...getAuthHeader(),
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete task: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return { data };
 }
