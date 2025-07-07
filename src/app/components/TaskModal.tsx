@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Task } from "../../../types/Task";
+import { fetchTasks } from "../utils/api";
 
 interface Props {
   isOpen: boolean;
@@ -16,7 +17,8 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState<"urgent" | "high" | "medium" | "low">("low");
   const [assignedTo, setAssignedTo] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [selectedDependencies, setSelectedDependencies] = useState<number[]>([]);
 
   const getLocalDateTimeString = (date: Date) => {
     const offset = date.getTimezoneOffset();
@@ -25,41 +27,41 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
   };
 
   useEffect(() => {
+    if (isOpen) {
+      fetchTasks().then((res) => setAllTasks(res.data));
+    }
+
     if (initialData) {
       setTitle(initialData.title || "");
       setDescription(initialData.description || "");
       setDueDate(initialData.due_date ? getLocalDateTimeString(new Date(initialData.due_date)) : "");
       setPriority(initialData.priority || "low");
       setAssignedTo(initialData.assigned_to_email || "");
-    } else {
+      setSelectedDependencies(initialData.dependencies || []);
+    } else{
       setTitle("");
       setDescription("");
       setDueDate("");
       setPriority("low");
       setAssignedTo("");
+      setSelectedDependencies([]);
     }
   }, [isOpen, initialData]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    try {
-      await onSave({
-        id: initialData?.id,
-        title,
-        description,
-        due_date: dueDate,
-        priority,
-        assigned_to_email: assignedTo.trim() || undefined,
-      });
-      onClose();
-    } catch (error) {
-      console.error("Error saving task:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    onSave({
+      id: initialData?.id,
+      title,
+      description,
+      due_date: dueDate,
+      priority,
+      assigned_to_email: assignedTo.trim() || undefined,
+      dependencies: selectedDependencies,
+    });
+    onClose();
   };
 
   return (
@@ -141,17 +143,15 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
           <button
             type="button"
             onClick={onClose}
-            disabled={isLoading}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded-lg shadow disabled:opacity-50"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded-lg shadow"
           >
             Cancel
           </button>
           <button
             type="submit"
-            disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow disabled:opacity-50"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow"
           >
-            {isLoading ? "Saving..." : "Save"}
+            Save
           </button>
         </div>
       </form>
