@@ -1,3 +1,4 @@
+// CalendarView.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -17,6 +18,11 @@ import { formatDateTime } from "../utils/formateDateTime";
 import { getUser } from "../utils/auth";
 import TaskDetailModal from "./TaskDetailModal";
 
+interface User {
+  name: string;
+  email: string;
+}
+
 const CalendarView = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +30,7 @@ const CalendarView = () => {
   const [taskCategory, setTaskCategory] = useState<
     "upcoming" | "pending" | "completed"
   >("upcoming");
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const loadTasks = async () => {
@@ -104,7 +110,7 @@ const CalendarView = () => {
           {user && (
             <button
               onClick={() => {
-                setEditTask(null); 
+                setEditTask(null);
                 setShowModal(true);
               }}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow"
@@ -150,7 +156,6 @@ const CalendarView = () => {
           initialData={editTask || undefined}
         />
         <TaskDetailModal task={selectedTask} onClose={() => setSelectedTask(null)} />
-
       </div>
 
       <div className="w-full lg:w-1/3 p-4 bg-white rounded-2xl shadow-xl border border-gray-200">
@@ -160,9 +165,11 @@ const CalendarView = () => {
           {["upcoming", "pending", "completed"].map((cat) => (
             <button
               key={cat}
-              onClick={() => setTaskCategory(cat as any)}
+              onClick={() => setTaskCategory(cat as "upcoming" | "pending" | "completed")}
               className={`flex-1 px-3 py-1 rounded ${
-                taskCategory === cat ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800 border"
+                taskCategory === cat
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-800 border"
               }`}
             >
               {cat[0].toUpperCase() + cat.slice(1)} Tasks
@@ -178,9 +185,7 @@ const CalendarView = () => {
             >
               <div>
                 <p className="font-semibold text-gray-800">{task.title}</p>
-                <p className="text-xs text-gray-500">
-                  {formatDateTime(task.due_date)}
-                </p>
+                <p className="text-xs text-gray-500">{formatDateTime(task.due_date)}</p>
               </div>
               <div className="flex justify-end gap-2 mt-2">
                 {task.status !== "completed" && (

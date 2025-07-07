@@ -17,7 +17,6 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState<"urgent" | "high" | "medium" | "low">("low");
   const [assignedTo, setAssignedTo] = useState("");
-  const [allTasks, setAllTasks] = useState<Task[]>([]);
   const [selectedDependencies, setSelectedDependencies] = useState<number[]>([]);
 
   const getLocalDateTimeString = (date: Date) => {
@@ -27,10 +26,6 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
   };
 
   useEffect(() => {
-    if (isOpen) {
-      fetchTasks().then((res) => setAllTasks(res.data));
-    }
-
     if (initialData) {
       setTitle(initialData.title || "");
       setDescription(initialData.description || "");
@@ -38,7 +33,7 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
       setPriority(initialData.priority || "low");
       setAssignedTo(initialData.assigned_to_email || "");
       setSelectedDependencies(initialData.dependencies || []);
-    } else{
+    } else {
       setTitle("");
       setDescription("");
       setDueDate("");
@@ -74,7 +69,6 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
           {initialData?.id ? "Edit Task" : "Add New Task"}
         </h2>
 
-        {/* Title */}
         <label className="block mb-4 text-gray-700 font-semibold">
           Title
           <input
@@ -86,7 +80,6 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
           />
         </label>
 
-        {/* Description */}
         <label className="block mb-4 text-gray-700 font-semibold">
           Description
           <textarea
@@ -97,7 +90,6 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
           />
         </label>
 
-        {/* Due Date */}
         <label className="block mb-4 text-gray-700 font-semibold">
           Due Date & Time
           <input
@@ -109,7 +101,6 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
           />
         </label>
 
-        {/* Assigned To */}
         <label className="block mb-4 text-gray-700 font-semibold">
           Assign To (Email)
           <input
@@ -121,7 +112,6 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
           />
         </label>
 
-        {/* Priority */}
         <label className="block mb-4 text-gray-700 font-semibold">
           Priority
           <select
@@ -138,7 +128,6 @@ const TaskModal = ({ isOpen, onClose, onSave, initialData }: Props) => {
           </select>
         </label>
 
-        {/* Buttons */}
         <div className="flex justify-end gap-4">
           <button
             type="button"

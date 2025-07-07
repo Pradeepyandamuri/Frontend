@@ -1,11 +1,18 @@
+// Navbar.tsx
 "use client";
 
 import { getUser, logout } from "./../utils/auth";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+
+interface User {
+  name: string;
+  email: string;
+}
 
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setUser(getUser());
@@ -13,9 +20,14 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 flex justify-between items-center px-6 py-4 border border-gray-300 bg-gray-100 shadow-sm rounded-md mb-6">
-
       <div className="flex items-center">
-        <img src="/TaskSchedulerLogo1.png" alt="Logo" className="h-20 w-40 object-contain hover:scale-105 transition-transform duration-300"/>
+        <Image
+          src="/TaskSchedulerLogo1.png"
+          alt="Logo"
+          width={160}
+          height={80}
+          className="h-20 w-40 object-contain hover:scale-105 transition-transform duration-300"
+        />
         <span className="text-2xl font-extrabold text-black">Task Scheduler</span>
       </div>
 
