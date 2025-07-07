@@ -31,7 +31,7 @@ export default function LoginPage() {
 
       const data = await res.json();
       localStorage.setItem("token", data.token); // optional: store token
-      router.push("/"); // or wherever you want to redirect
+      router.push("/"); // redirect after login
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("Login error:", err);
@@ -70,7 +70,7 @@ export default function LoginPage() {
             Log In
           </button>
           <p className="text-sm text-center text-gray-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <button
               type="button"
               onClick={() => router.push("/signup")}
