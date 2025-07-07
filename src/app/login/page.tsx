@@ -30,8 +30,10 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
-      localStorage.setItem("token", data.token); // Save token if needed
-      router.push("/"); // Redirect after login
+      localStorage.setItem("token", data.token); // Save JWT token
+
+      // Redirect to dashboard after successful login
+      router.push("/dashboard");
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("Login error:", err.message);
