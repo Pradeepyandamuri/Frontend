@@ -1,7 +1,9 @@
+// utils/api.ts
 import axios from "axios";
 import { Task } from "../../../types/Task";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"; // update if needed
+// ✅ Corrected environment variable name
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
 export async function fetchTasks(): Promise<{ data: Task[] }> {
   const response = await axios.get(`${BASE_URL}/tasks`);

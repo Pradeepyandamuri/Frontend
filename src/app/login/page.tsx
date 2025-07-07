@@ -18,7 +18,7 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -33,7 +33,7 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token); // Save JWT token
 
       // Redirect to dashboard after successful login
-      router.push("/dashboard");
+      router.replace("/dashboard");
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("Login error:", err.message);
