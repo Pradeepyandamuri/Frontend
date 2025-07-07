@@ -47,7 +47,6 @@ node_modules/
 out/
 
 # production
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
