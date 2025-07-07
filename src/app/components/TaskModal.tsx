@@ -1,8 +1,8 @@
+// TaskModal.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { Task } from "../../../types/Task";
-import { fetchTasks } from "../utils/api";
 
 interface Props {
   isOpen: boolean;

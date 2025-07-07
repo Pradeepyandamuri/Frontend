@@ -23,7 +23,8 @@ export default function LoginPage() {
       if (!res.ok) throw new Error("Login failed");
 
       router.push("/");
-    } catch (error) {
+    } catch (err) {
+      console.error("Login error:", err); // Avoid unused error
       alert("Login error");
     }
   };
@@ -60,7 +61,7 @@ export default function LoginPage() {
             Log In
           </button>
           <p className="text-sm text-center text-gray-600">
-            If you don&apos;t have an account, please {" "}
+            If you don&apos;t have an account, please{" "}
             <button
               type="button"
               onClick={handleRedirect}
