@@ -1,5 +1,3 @@
-// components/TaskDetailModal.tsx
-
 "use client";
 import { Task } from "../../../types/Task";
 
