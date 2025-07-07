@@ -2,18 +2,21 @@ import { Task } from "../../../types/Task";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-// ✅ Helper to get the stored token
-const getAuthHeader = () => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  return token ? { Authorization: `Bearer ${token}` } : {};
+// ✅ Always return a valid headers object
+const getAuthHeader = (): Record<string, string> => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (token) {
+      return { Authorization: `Bearer ${token}` };
+    }
+  }
+  return {}; // return an empty object that still satisfies the type
 };
 
 // ✅ Fetch all tasks
 export async function fetchTasks(): Promise<{ data: Task[] }> {
   const response = await fetch(`${BASE_URL}/tasks`, {
-    headers: {
-      ...getAuthHeader(),
-    },
+    headers: getAuthHeader(),
   });
 
   if (!response.ok) {
@@ -66,9 +69,7 @@ export async function updateTask(id: number, taskData: Partial<Task>): Promise<{
 export async function deleteTask(id: number): Promise<{ data: { message: string } }> {
   const response = await fetch(`${BASE_URL}/tasks/${id}`, {
     method: "DELETE",
-    headers: {
-      ...getAuthHeader(),
-    },
+    headers: getAuthHeader(),
   });
 
   if (!response.ok) {
