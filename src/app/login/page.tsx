@@ -30,11 +30,11 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
-      localStorage.setItem("token", data.token); // optional: store token
-      router.push("/"); // redirect after login
+      localStorage.setItem("token", data.token); // Save token if needed
+      router.push("/"); // Redirect after login
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error("Login error:", err);
+        console.error("Login error:", err.message);
         alert(err.message || "Something went wrong. Please try again.");
       } else {
         alert("Something went wrong. Please try again.");
