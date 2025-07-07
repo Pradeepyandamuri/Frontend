@@ -30,11 +30,14 @@ export default function SignupPage() {
         throw new Error(errorData.error || "Signup failed");
       }
 
-      // Optional: you can store token or redirect after success
       router.push("/login");
-    } catch (err: any) {
-      console.error("Signup error:", err);
-      alert(err.message || "Something went wrong. Please try again.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Signup error:", err);
+        alert(err.message || "Something went wrong. Please try again.");
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
     }
   };
 
